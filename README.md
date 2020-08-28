@@ -1,6 +1,6 @@
 # 📄↔📄 WPGraphQL for Posts 2 Posts
 
-WordPress plugin that creates GraphQL connections for all registered Posts 2 Posts connections.
+WordPress plugin that creates GraphQL connections for all of your [Posts 2 Posts](https://wordpress.org/plugins/posts-to-posts/) connections.
 
 ## Overview
 
@@ -65,7 +65,7 @@ query getUsers {
 
 - PHP 7.4+
 - [WPGraphQL](https://github.com/wp-graphql/wp-graphql) 0.12.1+
-- [Posts 2 Posts](https://wordpress.org/plugins/posts-to-posts/) - 1.6.6+
+- [Posts 2 Posts](https://wordpress.org/plugins/posts-to-posts/) 1.6.6+
 
 ## Future Enhancements
 
