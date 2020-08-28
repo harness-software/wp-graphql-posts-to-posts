@@ -13,6 +13,7 @@ use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
 use WPGraphQL\Data\DataSource;
 use WPGraphQL\Data\Connection;
+use WPGraphQL\Model\User;
 
 final class WPGraphQLPosts2Posts {
     /**
@@ -76,18 +77,18 @@ final class WPGraphQLPosts2Posts {
                 return DataSource::resolve_post_object( $id, $context );
             },
             'resolve'       => function( $source, array $request_args, AppContext $context, ResolveInfo $info ) use ( $args ) {
-                // We have a post and need to get connected users.
+                // We need to query for connected users.
                 if ( 'user' === $args['to_object_name'] ) {
                     $resolver = new Connection\UserConnectionResolver( $source, $request_args, $context, $info, $args['to_object_name'] );
-                    $resolver->setQueryArg( 'connected_items', $source->ID );
-                // We have a user and need to get connected posts.
+                // We need to query for connected posts.
                 } else {
                     $resolver = new Connection\PostObjectConnectionResolver( $source, $request_args, $context, $info, $args['to_object_name'] );
                     $resolver->setQueryArg( 'post_parent', null );
                     $resolver->setQueryArg( 'author', null );
-                    $resolver->setQueryArg( 'connected_items', $source->userId );
                 }
 
+                $source_object_id = $source instanceof User ? $source->userId : $source->ID;
+                $resolver->setQueryArg( 'connected_items', $source_object_id );
                 $resolver->setQueryArg( 'connected_type', $args['connection_name'] );
                 $connection = $resolver->get_connection();
 
