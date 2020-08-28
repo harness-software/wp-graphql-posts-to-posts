@@ -5,8 +5,8 @@ WordPress plugin that creates GraphQL connections for all registered Posts 2 Pos
 ## Overview
 
 - All registered Posts 2 Posts connections will be automatically added as connections in the GraphQL schema.
-- The field for each in the GraphQL schema will be the name of the Posts 2 Post connection, converted to camelCase and with the word "Connection" appended to it. So if the Posts 2 Posts connection was registered as "projects_to_managers", the field in the GraphQL schema will be named "projectsToManagersConnection" (see the example below).
-- Supports posts <-> posts, posts <-> users, and users <-> users connections.
+- The field for each in the GraphQL schema will be the name of the Posts 2 Post connection, converted to camelCase and with the word "Connection" appended to it. So if the Posts 2 Posts connection is registered as `projects_to_managers`, the field in the GraphQL schema will be named `projectsToManagersConnection` (see the example below).
+- Supports posts<->posts, posts<->users, and users<->users connections.
 
 ### Example
 
