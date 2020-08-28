@@ -142,4 +142,4 @@ final class WPGraphQLPosts2Posts {
     }
 }
 
-add_action( 'init', fn() => ( new WPGraphQLPosts2Posts )->register_hooks() );
+add_action( 'init', fn() => ( new WPGraphQLPosts2Posts() )->register_hooks() );
