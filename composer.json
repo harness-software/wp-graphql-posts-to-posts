@@ -1,0 +1,13 @@
+{
+  "name": "harness-software/wp-graphql-posts-to-posts",
+  "description": "WPGraphQL for Posts 2 Posts",
+  "type": "wordpress-plugin",
+  "license": "GPL-2.0",
+  "authors": [
+    {
+      "name": "Kellen Mace",
+      "email": "kellen@harnessup.com"
+    }
+  ],
+  "require": {}
+}
