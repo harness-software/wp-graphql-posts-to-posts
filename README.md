@@ -69,4 +69,15 @@ query getUsers {
 
 ## Future Enhancements
 
-- Expose [connection metadata](https://github.com/scribu/wp-posts-to-posts/wiki/Connection-metadata) as edge fields in the GraphQL schema.
+1. Register a `where` arg for each post type/user object so you can query to find posts/users that are connected to them.
+2. Expose [connection metadata](https://github.com/scribu/wp-posts-to-posts/wiki/Connection-metadata) as edge fields in the GraphQL schema.
+3. Register input fields for the create & update mutations so you can update the connections.
+
+I think the input fields for #3 will end up looking something like this:
+
+```graphql
+projectsToManagersConnections: {
+    append: false
+    databaseIds: [1,4,8]
+}
+```
