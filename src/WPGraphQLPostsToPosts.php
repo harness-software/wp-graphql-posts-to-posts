@@ -23,6 +23,10 @@ final class WPGraphQLPostsToPosts {
 
 	private function create_instances() {
 		$this->instances['connections_registrar'] = new Connections\ConnectionsRegistrar();
+		$this->instances['post'] = new Types\Post();
+		$this->instances['users'] = new Types\Users();
+		$this->instances['post_mutation'] = new Mutations\Post();
+		$this->instances['users_mutation'] = new Mutations\Users();
 	}
 
 	private function register_hooks() {
