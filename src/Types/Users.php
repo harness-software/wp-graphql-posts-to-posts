@@ -36,7 +36,7 @@ class Users implements Hookable {
         $p2p_connections_to_map = array_filter( $this->p2p_connections, [ $this, 'should_create_connection' ] );
         
         $field_names = [];
-        $post__in = [];
+        $include = [];
 
         foreach( $this->post_types as $post_type ){
 
@@ -69,7 +69,7 @@ class Users implements Hookable {
                 $connected_type = $post_to_post_connection['connection'];
 
                 $connected = new \WP_User_Query( array(
-                    'posts_per_page'         => 1000,
+                    'users_per_page'         => 1000,
                     'fields'                 => 'ids',
                     'connected_type'         => sanitize_text_field( $connected_type ),
                     'connected_items'        => array_map( 'absint', $post_to_post_connection['ids'] ),
@@ -78,18 +78,18 @@ class Users implements Hookable {
                     'update_post_term_cache' => false, 
                 ) );
 
-                $post_ids = $connected->posts;
+                $user_ids = $connected->results;
 
-                if( ! $post_ids)  {
-                    $query_args['post__in'] = [0];
+                if( ! $user_ids)  {
+                    $query_args['include'] = [0];
                     return $query_args;
                 }
 
-                $post__in = $post__in ? array_values( array_intersect( $post__in, $post_ids ) ) : $post_ids;
+                $include = $include ? array_values( array_intersect( $include, $user_ids ) ) : $user_ids;
             }
         }
 
-        $query_args['post__in'] = $post__in;
+        $query_args['include'] = $include;
         
         return $query_args;
     }
