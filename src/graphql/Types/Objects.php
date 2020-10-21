@@ -1,6 +1,6 @@
 <?php
 
-namespace WPGraphQLPostsToPosts\Mutations;
+namespace WPGraphQLPostsToPosts\graphql\Types;
 
 use P2P_Connection_Type;
 use GraphQL\Type\Definition\ResolveInfo;
@@ -26,44 +26,12 @@ trait Objects {
      */
     public $post_types = [];
 
-
-    public function register_type(){
-        register_graphql_input_type('PostToPostConnectionsUpdate', [
-            'description' => __( 'PostToPostConnections type.', 'harness' ),
-            'fields' => [
-                'connection' => [
-                    'type'        => 'String',
-                    'description' => __( 'connection type.', 'harness' ),
-                ],
-                'ids' => [
-                    'type'        =>  [ 'list_of' => 'Int' ],
-                    'description' => __( 'connection ids.', 'harness' ),
-                ],
-                'append' => [
-                    'type'        => 'Boolean',
-                    'description' => __( 'append connection boolean.', 'harness' ),
-                ],
-            ]
-        ]);
-    }
-
     public function capture_p2p_connections( P2P_Connection_Type $ctype, array $args ) : void {
         $this->p2p_connections[] = $args;
     }
 
     public function set_post_types_property() {
         $this->post_types = get_post_types( [ 'show_in_graphql' => true ], 'objects' );
-    }
-
-    private function camel_case_to_underscores ( $string ) {
-
-        if ( 0 === preg_match ( '/[A-Z]/', $string )  ) { return $string; }
-        $pattern = '/([a-z])([A-Z])/';
-        $replaced_str = strtolower ( preg_replace_callback ( $pattern, function ($lettersToReplace) {
-        return $lettersToReplace[1] . "_" . strtolower ( $lettersToReplace[2] ); 
-        }, $string ) );
-        $ready_connection = \str_replace('update_', '', $replaced_str);
-        return $ready_connection;
     }
 
     public function should_create_connection( array $connection ) : bool {
@@ -80,4 +48,5 @@ trait Objects {
 
         return in_array( $post_type_name, $post_type_names, true );
     }
+
 }

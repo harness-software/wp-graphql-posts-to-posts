@@ -1,6 +1,6 @@
 <?php
 
-namespace WPGraphQLPostsToPosts\Types;
+namespace WPGraphQLPostsToPosts\graphql\Types;
 
 use P2P_Connection_Type;
 use GraphQL\Type\Definition\ResolveInfo;
@@ -9,6 +9,8 @@ use WPGraphQL\Data\DataSource;
 use WPGraphQL\Data\Connection;
 use WPGraphQL\Model\User;
 use WPGraphQLPostsToPosts\Interfaces\Hookable;
+use WPGraphQLPostsToPosts\graphql\Fields;
+
 
 class Users implements Hookable {
 
@@ -17,16 +19,15 @@ class Users implements Hookable {
     public function register_hooks() {
         add_action( 'p2p_registered_connection_type',       [ $this, 'capture_p2p_connections' ], 10, 2 );
         add_action( 'graphql_register_types',               [ $this, 'set_post_types_property' ] );
-        add_action( 'graphql_register_types',               [ $this, 'register_type'] );
         add_action( 'graphql_register_types',               [ $this, 'register_where_input_fields' ] );
         add_filter( 'graphql_map_input_fields_to_wp_user_query', [ $this, 'modify_query_input_fields' ], 10, 6 );
     }
 
     public function register_where_input_fields() {
     
-        register_graphql_field( 'RootQueryToUserConnectionWhereArgs', 'postToPostConnections', [
-            'type'        => [ 'list_of' => 'PostToPostConnections' ],
-            'description' =>  __( 'Id', 'harness' ),
+        register_graphql_field( 'RootQueryToUserConnectionWhereArgs', Fields::NAME, [
+            'type'        => [ 'list_of' => Fields::QUERY_TYPE ],
+            'description' =>  __( 'Id', 'wp-graphql-posts-to-posts' ),
         ] );
                
     }
