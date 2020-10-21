@@ -1,13 +1,12 @@
 <?php
 
-namespace WPGraphQLPostsToPosts\Types;
+namespace WPGraphQLPostsToPosts\graphql\Mutations;
 
 use P2P_Connection_Type;
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
 use WPGraphQL\Data\DataSource;
 use WPGraphQL\Data\Connection;
-use WPGraphQL\Model\User;
 use WPGraphQLPostsToPosts\Interfaces\Hookable;
 
 trait Objects {
@@ -26,8 +25,9 @@ trait Objects {
      */
     public $post_types = [];
 
+
     public function register_type(){
-        register_graphql_input_type('PostToPostConnections', [
+        register_graphql_input_type('PostToPostConnectionsUpdate', [
             'description' => __( 'PostToPostConnections type.', 'harness' ),
             'fields' => [
                 'connection' => [
@@ -37,6 +37,10 @@ trait Objects {
                 'ids' => [
                     'type'        =>  [ 'list_of' => 'Int' ],
                     'description' => __( 'connection ids.', 'harness' ),
+                ],
+                'append' => [
+                    'type'        => 'Boolean',
+                    'description' => __( 'append connection boolean.', 'harness' ),
                 ],
             ]
         ]);
@@ -48,6 +52,18 @@ trait Objects {
 
     public function set_post_types_property() {
         $this->post_types = get_post_types( [ 'show_in_graphql' => true ], 'objects' );
+    }
+
+    private function camel_case_to_underscores ( $string ) {
+
+        if ( 0 === preg_match ( '/[A-Z]/', $string )  ) { return $string; }
+        $pattern = '/([a-z])([A-Z])/';
+        $replaced_str = strtolower ( preg_replace_callback ( $pattern, function ($lettersToReplace) {
+        return $lettersToReplace[1] . "_" . strtolower ( $lettersToReplace[2] ); 
+        }, $string ) );
+        $update_removed = \str_replace('update_', '', $replaced_str);
+        $ready_connection = \str_replace('create_', '', $update_removed);
+        return $ready_connection;
     }
 
     public function should_create_connection( array $connection ) : bool {
@@ -64,5 +80,4 @@ trait Objects {
 
         return in_array( $post_type_name, $post_type_names, true );
     }
-
 }

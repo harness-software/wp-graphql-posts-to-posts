@@ -1,6 +1,6 @@
 <?php
 
-namespace WPGraphQLPostsToPosts\Mutations;
+namespace WPGraphQLPostsToPosts\graphql\Mutations;
 
 use WP_Post_Type;
 use WPGraphQL\AppContext;
@@ -9,8 +9,8 @@ use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\Data\DataSource;
 use WPGraphQL\Data\Connection;
-use WPGraphQL\Model\User;
 use WPGraphQLPostsToPosts\Interfaces\Hookable;
+use WPGraphQLPostsToPosts\graphql\Fields;
 
 class Users implements Hookable {
 
@@ -19,17 +19,20 @@ class Users implements Hookable {
     public function register_hooks() {
         add_action( 'p2p_registered_connection_type',       [ $this, 'capture_p2p_connections' ], 10, 2 );
         add_action( 'graphql_register_types',               [ $this, 'set_post_types_property' ] );
-        add_action( 'graphql_register_types',               [ $this, 'register_type'] );
-        add_action( 'graphql_register_types',               [ $this, 'register_where_input_fields' ] );
+        add_action( 'graphql_register_types',               [ $this, 'register_input_fields' ] );
         add_action( 'graphql_user_object_mutation_update_additional_data', [ $this, 'save_additional_data' ], 10, 4 );;
     }
 
     
-    public function register_where_input_fields() {
+    public function register_input_fields() {
       
-        register_graphql_field( 'UpdateUserInput', 'postToPostConnections', [
-            'type'        => [ 'list_of' => 'PostToPostConnectionsUpdate' ],
-            'description' =>  __( 'Id', 'harness' ),
+        register_graphql_field( 'UpdateUserInput', Fields::NAME, [
+            'type'        => [ 'list_of' => Fields::MUTATION_TYPE ],
+            'description' =>  __( 'Id', 'wp-graphql-posts-to-posts' ),
+        ] );
+        register_graphql_field( 'CreateUserInput', Fields::NAME, [
+            'type'        => [ 'list_of' => Fields::QUERY_TYPE ],
+            'description' =>  __( 'Id', 'wp-graphql-posts-to-posts' ),
         ] );
 
     }
@@ -55,7 +58,7 @@ class Users implements Hookable {
 
                     $connected_type = $post_to_post_connection['connection'];
 
-                    if( ! $post_to_post_connection['append'] || 0 === count( $post_to_post_connection['ids'] ) ) {
+                    if( false === strpos( $mutation_name, 'Create' ) && ( ! $post_to_post_connection['append'] || 0 === count( $post_to_post_connection['ids'] ) ) ) {
 
                         $connected_ids = [];
 
