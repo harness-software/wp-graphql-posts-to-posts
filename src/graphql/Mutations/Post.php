@@ -17,13 +17,12 @@ class Post implements Hookable {
     use Objects;
 
     public function register_hooks() {
-        add_action( 'p2p_registered_connection_type',       [ $this, 'capture_p2p_connections' ], 10, 2 );
-        add_action( 'graphql_register_types',               [ $this, 'set_post_types_property' ] );
-        add_action( 'graphql_register_types',               [ $this, 'register_input_fields' ] );
+        add_action( 'p2p_registered_connection_type',                      [ $this, 'capture_p2p_connections' ], 10, 2 );
+        add_action( 'graphql_register_types',                              [ $this, 'set_post_types_property' ] );
+        add_action( 'graphql_register_types',                              [ $this, 'register_input_fields' ] );
         add_action( 'graphql_post_object_mutation_update_additional_data', [ $this, 'save_additional_data' ], 10, 4 );;
     }
 
-    
     public function register_input_fields() {
       
         foreach( $this->post_types as $post_type ){
@@ -45,7 +44,7 @@ class Post implements Hookable {
     public function save_additional_data( int $post_id, array $input, WP_Post_Type $post_type_object, string $mutation_name ) : void {
 
         foreach( $this->post_types as $post_type ) {
-            if($post_type->name === $this->camel_case_to_underscores( $mutation_name )){
+            if( $post_type->name === $this->camel_case_to_underscores( $mutation_name )){
 
                 $p2p_connections_to_map = array_filter( $this->p2p_connections, [ $this, 'should_create_connection' ] );
 

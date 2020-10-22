@@ -11,15 +11,14 @@ use WPGraphQL\Model\User;
 use WPGraphQLPostsToPosts\Interfaces\Hookable;
 use WPGraphQLPostsToPosts\graphql\Fields;
 
-
 class Users implements Hookable {
 
     use Objects;
 
     public function register_hooks() {
-        add_action( 'p2p_registered_connection_type',       [ $this, 'capture_p2p_connections' ], 10, 2 );
-        add_action( 'graphql_register_types',               [ $this, 'set_post_types_property' ] );
-        add_action( 'graphql_register_types',               [ $this, 'register_where_input_fields' ] );
+        add_action( 'p2p_registered_connection_type',            [ $this, 'capture_p2p_connections' ], 10, 2 );
+        add_action( 'graphql_register_types',                    [ $this, 'set_post_types_property' ] );
+        add_action( 'graphql_register_types',                    [ $this, 'register_where_input_fields' ] );
         add_filter( 'graphql_map_input_fields_to_wp_user_query', [ $this, 'modify_query_input_fields' ], 10, 6 );
     }
 
@@ -37,7 +36,7 @@ class Users implements Hookable {
         $p2p_connections_to_map = array_filter( $this->p2p_connections, [ $this, 'should_create_connection' ] );
         
         $field_names = [];
-        $include = [];
+        $include     = [];
 
         foreach( $this->post_types as $post_type ){
 
@@ -51,7 +50,7 @@ class Users implements Hookable {
         }
 
 
-        if( count ( $query_args['postToPostConnections']  ) === 1 ){
+        if( count ( 1 === $query_args['postToPostConnections']  ) ){
 
             $connection = $query_args['postToPostConnections'][0]['connection'];
 

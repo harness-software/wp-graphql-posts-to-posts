@@ -25,7 +25,6 @@ trait Objects {
      */
     public $post_types = [];
 
-
     public function register_type(){
         register_graphql_input_type('PostToPostConnectionsUpdate', [
             'description' => __( 'PostToPostConnections type.', 'harness' ),
