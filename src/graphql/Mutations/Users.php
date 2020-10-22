@@ -17,13 +17,12 @@ class Users implements Hookable {
     use Objects;
 
     public function register_hooks() {
-        add_action( 'p2p_registered_connection_type',       [ $this, 'capture_p2p_connections' ], 10, 2 );
-        add_action( 'graphql_register_types',               [ $this, 'set_post_types_property' ] );
-        add_action( 'graphql_register_types',               [ $this, 'register_input_fields' ] );
+        add_action( 'p2p_registered_connection_type',                      [ $this, 'capture_p2p_connections' ], 10, 2 );
+        add_action( 'graphql_register_types',                              [ $this, 'set_post_types_property' ] );
+        add_action( 'graphql_register_types',                              [ $this, 'register_input_fields' ] );
         add_action( 'graphql_user_object_mutation_update_additional_data', [ $this, 'save_additional_data' ], 10, 4 );;
     }
 
-    
     public function register_input_fields() {
       
         register_graphql_field( 'UpdateUserInput', Fields::NAME, [
@@ -39,12 +38,11 @@ class Users implements Hookable {
 
     public function save_additional_data( int $user_id, array $input, string $mutation_name ) : void {
 
-       
         if( 'updateUser' === $mutation_name ){
 
             $p2p_connections_to_map = array_filter( $this->p2p_connections, [ $this, 'should_create_connection' ] );
 
-            $field_names   = [];
+            $field_names = [];
 
             $connections = array_filter( $p2p_connections_to_map, fn( $p2p_connection ) => $p2p_connection['from'] ===  'user' ||  $p2p_connection['to'] ===  'user');
 

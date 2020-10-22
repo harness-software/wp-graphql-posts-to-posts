@@ -41,7 +41,7 @@ class Post implements Hookable {
         $p2p_connections_to_map = array_filter( $this->p2p_connections, [ $this, 'should_create_connection' ] );
         
         $field_names = [];
-        $post__in = [];
+        $post__in    = [];
 
         foreach( $this->post_types as $post_type ){
 
@@ -55,13 +55,13 @@ class Post implements Hookable {
         }
 
 
-        if( count ( $query_args['postToPostConnections']  ) === 1 ){
+        if( count ( 1 === $query_args['postToPostConnections']  ) ){
 
             $connection = $query_args['postToPostConnections'][0]['connection'];
 
             if( in_array( $connection, $field_names ) ){
                 $connected_type = $connection;
-                $query_args['connected_type'] = sanitize_text_field( $connected_type );
+                $query_args['connected_type']  = sanitize_text_field( $connected_type );
                 $query_args['connected_items'] = array_map( 'absint', $query_args['postToPostConnections'][0]['ids'] );
                 return $query_args;
             }
