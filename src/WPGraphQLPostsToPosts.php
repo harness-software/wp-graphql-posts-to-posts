@@ -27,11 +27,11 @@ final class WPGraphQLPostsToPosts {
 
 	private function register_hooks() {
 		foreach ( $this->get_hookable_instances() as $instance ) {
-            $instance->register_hooks();
-        }
+			$instance->register_hooks();
+		}
 	}
 
 	private function get_hookable_instances() {
-        return array_filter( $this->instances, fn( $instance ) => $instance instanceof Hookable );
-    }
+		return array_filter( $this->instances, fn( $instance ) => $instance instanceof Hookable );
+	}
 }
