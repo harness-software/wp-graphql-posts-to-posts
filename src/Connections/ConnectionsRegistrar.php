@@ -8,6 +8,8 @@ use WPGraphQL\AppContext;
 use WPGraphQL\Data\Connection;
 use WPGraphQL\Model\User;
 use WPGraphQLPostsToPosts\Interfaces\Hookable;
+use WPGraphQL\Connection\Users;
+use WPGraphQL\Connection\PostObjects;
 
 class ConnectionsRegistrar implements Hookable {
 	/**
@@ -65,10 +67,12 @@ class ConnectionsRegistrar implements Hookable {
 	private function register_connection( array $args ) : void {
 		register_graphql_connection(
 			[
-				'fromType'      => $this->get_graphql_single_name( $args['from_object_name'] ),
-				'toType'        => $this->get_graphql_single_name( $args['to_object_name'] ),
-				'fromFieldName' => graphql_format_field_name( $args['connection_name'] . 'Connection' ),
-				'resolve'       => function( $source, array $request_args, AppContext $context, ResolveInfo $info ) use ( $args ) {
+				'fromType'       => $this->get_graphql_single_name( $args['from_object_name'] ),
+				'toType'         => $this->get_graphql_single_name( $args['to_object_name'] ),
+				'fromFieldName'  => graphql_format_field_name( $args['connection_name'] . 'Connection' ),
+				'connectionArgs' => 'user' === $args['to_object_name'] ? Users::get_connection_args() : PostObjects::get_connection_args(),
+				'resolve'        => function( $source, array $request_args, AppContext $context, ResolveInfo $info ) use ( $args ) {
+					graphql_debug( $args['to_object_name'] );
 					// We need to query for connected users.
 					if ( 'user' === $args['to_object_name'] ) {
 						$resolver = new Connection\UserConnectionResolver( $source, $request_args, $context, $info, $args['to_object_name'] );
@@ -133,4 +137,5 @@ class ConnectionsRegistrar implements Hookable {
 
 		return null;
 	}
+
 }
