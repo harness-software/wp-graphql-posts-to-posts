@@ -51,6 +51,10 @@ class ConnectionsRegistrar implements Hookable {
 				]
 			);
 
+			if ( $p2p_connection['from'] === $p2p_connection['to'] ) {
+				continue;
+			}
+
 			// Register to -> from connection.
 			$this->register_connection(
 				[
