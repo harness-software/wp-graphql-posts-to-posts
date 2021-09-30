@@ -12,7 +12,7 @@ use WPGraphQLPostsToPosts\Interfaces\Hookable;
 
 trait Objects {
 
-	 /**
+	/**
 	 * Registered Posts2Posts connections.
 	 *
 	 * @var array

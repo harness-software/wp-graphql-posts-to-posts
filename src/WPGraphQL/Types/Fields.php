@@ -87,7 +87,7 @@ class Fields implements Hookable {
 					],
 					'append'     => [
 						'type'        => 'Boolean',
-						'description' => __( 'append connection boolean.', 'harness' ),
+						'description' => __( 'append connection boolean.', 'wp-graphql-posts-to-posts' ),
 					],
 				],
 			]

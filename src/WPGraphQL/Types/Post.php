@@ -58,7 +58,7 @@ class Post implements Hookable {
 		if ( count( 1 === $query_args['postToPostConnections'] ) ) {
 			$connection = $query_args['postToPostConnections'][0]['connection'];
 
-			if ( in_array( $connection, $field_names ) ) {
+			if ( in_array( $connection, $field_names, true ) ) {
 				$connected_type                = $connection;
 				$query_args['connected_type']  = sanitize_text_field( $connected_type );
 				$query_args['connected_items'] = array_map( 'absint', $query_args['postToPostConnections'][0]['ids'] );
@@ -67,7 +67,7 @@ class Post implements Hookable {
 		}
 
 		foreach ( $query_args['postToPostConnections'] as $post_to_post_connection ) {
-			if ( in_array( $post_to_post_connection['connection'], $field_names ) ) {
+			if ( in_array( $post_to_post_connection['connection'], $field_names, true ) ) {
 				$connected_type = $post_to_post_connection['connection'];
 
 				$connected = new \WP_Query(
