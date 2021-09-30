@@ -1,0 +1,16 @@
+parameters:
+		level: 1
+		inferPrivatePropertyTypeFromConstructor: true
+		checkMissingIterableValueType: false
+		featureToggles:
+			disableRuntimeReflectionProvider: true
+		bootstrapFiles:
+			- wp-graphql-posts-to-posts.php
+		paths:
+			- wp-graphql-posts-to-posts.php
+			- src/
+		scanDirectories:
+			- ../wp-graphql/
+			- ../posts-to-posts/
+		ignoreErrors:
+			- '#^Function apply_filters(_ref_array)? invoked with ([1-9]|1[0-2]) parameters, 2 required\.$#'
