@@ -2,8 +2,8 @@
 
 namespace WPGraphQLPostsToPosts\WPGraphQL\Types;
 
-use P2P_Connection_Type;
 use GraphQL\Type\Definition\ResolveInfo;
+use P2P_Connection_Type;
 use WPGraphQL\AppContext;
 use WPGraphQL\Data\DataSource;
 use WPGraphQL\Data\Connection;

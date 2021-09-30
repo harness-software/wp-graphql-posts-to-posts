@@ -4,6 +4,7 @@ namespace WPGraphQLPostsToPosts\WPGraphQL\Types;
 
 use P2P_Connection_Type;
 use GraphQL\Type\Definition\ResolveInfo;
+use WPGraphQL;
 use WPGraphQL\AppContext;
 use WPGraphQL\Data\DataSource;
 use WPGraphQL\Data\Connection;
@@ -37,9 +38,9 @@ class Post implements Hookable {
 		}
 	}
 
+
 	public function modify_query_input_fields( array $query_args ) : array {
 		$p2p_connections_to_map = array_filter( $this->p2p_connections, [ $this, 'should_create_connection' ] );
-		graphql_debug( $p2p_connections_to_map );
 
 		$field_names = [];
 		$post__in    = [];
