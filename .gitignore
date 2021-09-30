@@ -25,3 +25,6 @@ tests/*.suite.yml
 Thumbs.db
 wp-cli.local.yml
 vendor
+!vendor/composer
+!vendor/composer/*
+!vendor/autoload.php
