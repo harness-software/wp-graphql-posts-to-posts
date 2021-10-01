@@ -11,5 +11,5 @@ interface Hookable {
 	 *
 	 * @return void
 	 */
-	public function register_hooks();
+	public function register_hooks() : void;
 }

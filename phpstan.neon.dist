@@ -1,0 +1,17 @@
+parameters:
+		level: 8
+		inferPrivatePropertyTypeFromConstructor: true
+		checkMissingIterableValueType: false
+		featureToggles:
+			disableRuntimeReflectionProvider: true
+		bootstrapFiles:
+			- wp-graphql-posts-to-posts.php
+		paths:
+			- wp-graphql-posts-to-posts.php
+			- src/
+		scanDirectories:
+			- ../wp-graphql/
+			- ../posts-to-posts/
+		ignoreErrors:
+			- '#^Call to an undefined method object::disconnect\(\).$#'
+			- '#^Call to an undefined method object::connect\(\).$#'

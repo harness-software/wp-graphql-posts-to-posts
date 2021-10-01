@@ -20,11 +20,27 @@ class ComposerStaticInitfc2ebba91741ccdd8d50eb1e2ef478ce
         ),
     );
 
+    public static $classMap = array (
+        'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
+        'WPGraphQLPostsToPosts\\Connections\\ConnectionsRegistrar' => __DIR__ . '/../..' . '/src/Connections/ConnectionsRegistrar.php',
+        'WPGraphQLPostsToPosts\\Interfaces\\Hookable' => __DIR__ . '/../..' . '/src/Interfaces/Hookable.php',
+        'WPGraphQLPostsToPosts\\Mutations\\AbstractMutation' => __DIR__ . '/../..' . '/src/Mutations/AbstractMutation.php',
+        'WPGraphQLPostsToPosts\\Mutations\\PostMutation' => __DIR__ . '/../..' . '/src/Mutations/PostMutation.php',
+        'WPGraphQLPostsToPosts\\Mutations\\UserMutation' => __DIR__ . '/../..' . '/src/Mutations/UserMutation.php',
+        'WPGraphQLPostsToPosts\\Traits\\ObjectsTrait' => __DIR__ . '/../..' . '/src/Traits/ObjectsTrait.php',
+        'WPGraphQLPostsToPosts\\Types\\Fields' => __DIR__ . '/../..' . '/src/Types/Fields.php',
+        'WPGraphQLPostsToPosts\\Types\\Inputs' => __DIR__ . '/../..' . '/src/Types/Inputs.php',
+        'WPGraphQLPostsToPosts\\Types\\Post' => __DIR__ . '/../..' . '/src/Types/Post.php',
+        'WPGraphQLPostsToPosts\\Types\\User' => __DIR__ . '/../..' . '/src/Types/User.php',
+        'WPGraphQLPostsToPosts\\WPGraphQLPostsToPosts' => __DIR__ . '/../..' . '/src/WPGraphQLPostsToPosts.php',
+    );
+
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInitfc2ebba91741ccdd8d50eb1e2ef478ce::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInitfc2ebba91741ccdd8d50eb1e2ef478ce::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInitfc2ebba91741ccdd8d50eb1e2ef478ce::$classMap;
 
         }, null, ClassLoader::class);
     }

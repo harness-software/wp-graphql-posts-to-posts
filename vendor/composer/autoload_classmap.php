@@ -6,4 +6,16 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
+    'WPGraphQLPostsToPosts\\Connections\\ConnectionsRegistrar' => $baseDir . '/src/Connections/ConnectionsRegistrar.php',
+    'WPGraphQLPostsToPosts\\Interfaces\\Hookable' => $baseDir . '/src/Interfaces/Hookable.php',
+    'WPGraphQLPostsToPosts\\Mutations\\AbstractMutation' => $baseDir . '/src/Mutations/AbstractMutation.php',
+    'WPGraphQLPostsToPosts\\Mutations\\PostMutation' => $baseDir . '/src/Mutations/PostMutation.php',
+    'WPGraphQLPostsToPosts\\Mutations\\UserMutation' => $baseDir . '/src/Mutations/UserMutation.php',
+    'WPGraphQLPostsToPosts\\Traits\\ObjectsTrait' => $baseDir . '/src/Traits/ObjectsTrait.php',
+    'WPGraphQLPostsToPosts\\Types\\Fields' => $baseDir . '/src/Types/Fields.php',
+    'WPGraphQLPostsToPosts\\Types\\Inputs' => $baseDir . '/src/Types/Inputs.php',
+    'WPGraphQLPostsToPosts\\Types\\Post' => $baseDir . '/src/Types/Post.php',
+    'WPGraphQLPostsToPosts\\Types\\User' => $baseDir . '/src/Types/User.php',
+    'WPGraphQLPostsToPosts\\WPGraphQLPostsToPosts' => $baseDir . '/src/WPGraphQLPostsToPosts.php',
 );
