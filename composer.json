@@ -13,19 +13,10 @@
       "email": "sean@harnessup.com"
     }
   ],
-  "require": {},
-	"require-dev": {
-    "lucatume/wp-browser": "^3.0",
-    "codeception/lib-innerbrowser": "^1.0",
-    "codeception/phpunit-wrapper": "^8.1",
-    "codeception/module-asserts": "^1.1",
-    "codeception/module-cli": "^1.0",
-    "codeception/module-db": "^1.0",
-    "codeception/module-filesystem": "^1.0",
-    "codeception/module-phpbrowser": "^1.0",
-    "codeception/module-rest": "^1.2",
-    "codeception/module-webdriver": "^1.0",
-    "codeception/util-universalframework": "^1.0",
+  "require": {
+    "php": ">=7.4"
+  },
+  "require-dev": {
     "dealerdirect/phpcodesniffer-composer-installer": "^0.7",
     "wp-coding-standards/wpcs": "^2.3",
     "phpcompatibility/phpcompatibility-wp": "^2.1",
@@ -33,9 +24,7 @@
     "phpstan/phpstan": "^0.12",
     "szepeviktor/phpstan-wordpress": "^0.7",
     "phpstan/extension-installer": "^1.1",
-    "phpunit/phpunit": "^8.5",
     "simpod/php-coveralls-mirror": "^3.0",
-    "wp-graphql/wp-graphql-testcase": "~2.1",
     "poolshark/wp-graphql-stubs": "^0.0.2"
   },
   "autoload": {
@@ -43,11 +32,11 @@
       "WPGraphQLPostsToPosts\\": "src/"
     }
   },
-	  "config": {
+  "config": {
     "optimize-autoloader": true,
     "process-timeout": 0
   },
-	"scripts": {
+  "scripts": {
     "install-test-env": "bash bin/install-test-env.sh",
     "lint": "vendor/bin/phpcs",
     "phpcs-i": [
