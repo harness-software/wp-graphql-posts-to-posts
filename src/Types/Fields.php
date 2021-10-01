@@ -25,7 +25,6 @@ class Fields implements Hookable {
 		add_action( get_graphql_register_action(), [ $this, 'register_connection_name_enum' ], 9 );
 	}
 
-
 	public function capture_p2p_connections( P2P_Connection_Type $ctype, array $args ) : void {
 		if ( ! isset( self::$p2p_connections[ $args['name'] ] ) ) {
 			self::$p2p_connections[ $args['name'] ] = $args;
