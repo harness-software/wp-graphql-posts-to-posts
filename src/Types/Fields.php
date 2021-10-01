@@ -14,7 +14,7 @@ class Fields implements Hookable {
 
 	public function register_hooks() : void {
 		add_action( 'p2p_registered_connection_type', [ $this, 'capture_p2p_connections' ], 10, 2 );
-		add_action( 'graphql_register_types', [ $this, 'register_connection_name_enum' ], 9 );
+		add_action( get_graphql_register_action(), [ $this, 'register_connection_name_enum' ], 9 );
 	}
 
 	public function register_connection_name_enum() : void {
