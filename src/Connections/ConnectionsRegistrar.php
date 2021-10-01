@@ -8,17 +8,17 @@ use WPGraphQL\Data\Connection;
 use WPGraphQL\Model\User;
 use WPGraphQLPostsToPosts\Interfaces\Hookable;
 use WPGraphQLPostsToPosts\Traits\ObjectsTrait;
+use WPGraphQLPostsToPosts\Types\Fields;
 
 class ConnectionsRegistrar implements Hookable {
 	use ObjectsTrait;
 
 	public function register_hooks() : void {
-		add_action( 'p2p_registered_connection_type', [ $this, 'capture_p2p_connections' ], 10, 2 );
 		add_action( get_graphql_register_action(), [ $this, 'register_connections' ], 11 );
 	}
 
 	public function register_connections() : void {
-		$p2p_connections_to_map = array_filter( $this->p2p_connections, [ $this, 'should_create_connection' ] );
+		$p2p_connections_to_map = Fields::get_p2p_connections();
 
 		foreach ( $p2p_connections_to_map as $p2p_connection ) {
 			// Register from -> to connection.

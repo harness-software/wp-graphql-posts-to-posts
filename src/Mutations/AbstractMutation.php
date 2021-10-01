@@ -12,8 +12,7 @@ abstract class AbstractMutation implements Hookable {
 	use ObjectsTrait;
 
 	public function register_hooks() : void {
-		add_action( 'p2p_registered_connection_type', [ $this, 'capture_p2p_connections' ], 10, 2 );
-		add_action( get_graphql_register_action(), [ $this, 'register_input_fields' ] );
+				add_action( get_graphql_register_action(), [ $this, 'register_input_fields' ] );
 	}
 
 	abstract public function register_input_fields() : void;

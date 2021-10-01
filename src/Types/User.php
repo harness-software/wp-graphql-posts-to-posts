@@ -11,7 +11,6 @@ class User implements Hookable {
 	use ObjectsTrait;
 
 	public function register_hooks() : void {
-		add_action( 'p2p_registered_connection_type', [ $this, 'capture_p2p_connections' ], 10, 2 );
 		add_action( get_graphql_register_action(), [ $this, 'register_where_input_fields' ] );
 		add_filter( 'graphql_map_input_fields_to_wp_user_query', [ $this, 'modify_query_input_fields' ], 10 );
 	}
@@ -28,7 +27,7 @@ class User implements Hookable {
 	}
 
 	public function modify_query_input_fields( array $query_args ) : array {
-		$p2p_connections_to_map = array_filter( $this->p2p_connections, [ $this, 'should_create_connection' ] );
+		$p2p_connections_to_map = Fields::get_p2p_connections();
 
 		$field_names = [];
 		$include     = [];

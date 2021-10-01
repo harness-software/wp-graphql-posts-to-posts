@@ -34,7 +34,7 @@ class UserMutation extends AbstractMutation {
 			return;
 		}
 
-		$p2p_connections_to_map = array_filter( $this->p2p_connections, [ $this, 'should_create_connection' ] );
+		$p2p_connections_to_map = Fields::get_p2p_connections();
 
 		$field_names = [];
 
