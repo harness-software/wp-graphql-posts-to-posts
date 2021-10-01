@@ -2,43 +2,22 @@
 
 namespace WPGraphQLPostsToPosts\Connections;
 
-use P2P_Connection_Type;
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;
 use WPGraphQL\Data\Connection;
 use WPGraphQL\Model\User;
 use WPGraphQLPostsToPosts\Interfaces\Hookable;
+use WPGraphQLPostsToPosts\Traits\ObjectsTrait;
 
 class ConnectionsRegistrar implements Hookable {
-	/**
-	 * Registered Posts2Posts connections.
-	 *
-	 * @var array
-	 */
-	private $p2p_connections = [];
+	use ObjectsTrait;
 
-	/**
-	 * Post types exposed in the GraphQL schema.
-	 *
-	 * @var array
-	 */
-	private $post_types = [];
-
-	public function register_hooks() {
+	public function register_hooks() : void {
 		add_action( 'p2p_registered_connection_type', [ $this, 'capture_p2p_connections' ], 10, 2 );
-		add_action( 'graphql_register_types', [ $this, 'set_post_types_property' ] );
-		add_action( 'graphql_register_types', [ $this, 'register_connections' ], 11 );
+		add_action( get_graphql_register_action(), [ $this, 'register_connections' ], 11 );
 	}
 
-	public function capture_p2p_connections( P2P_Connection_Type $ctype, array $args ) : void {
-		$this->p2p_connections[] = $args;
-	}
-
-	public function set_post_types_property() {
-		$this->post_types = get_post_types( [ 'show_in_graphql' => true ], 'objects' );
-	}
-
-	public function register_connections() {
+	public function register_connections() : void {
 		$p2p_connections_to_map = array_filter( $this->p2p_connections, [ $this, 'should_create_connection' ] );
 
 		foreach ( $p2p_connections_to_map as $p2p_connection ) {
@@ -69,13 +48,13 @@ class ConnectionsRegistrar implements Hookable {
 	private function register_connection( array $args ) : void {
 		register_graphql_connection(
 			[
-				'fromType'      => $this->get_graphql_single_name( $args['from_object_name'] ),
-				'toType'        => $this->get_graphql_single_name( $args['to_object_name'] ),
+				'fromType'      => self::get_graphql_single_name( $args['from_object_name'] ),
+				'toType'        => self::get_graphql_single_name( $args['to_object_name'] ),
 				'fromFieldName' => graphql_format_field_name( $args['connection_name'] . 'Connection' ),
 				'resolve'       => function( $source, array $request_args, AppContext $context, ResolveInfo $info ) use ( $args ) {
 					// We need to query for connected users.
 					if ( 'user' === $args['to_object_name'] ) {
-						$resolver = new Connection\UserConnectionResolver( $source, $request_args, $context, $info, $args['to_object_name'] );
+						$resolver = new Connection\UserConnectionResolver( $source, $request_args, $context, $info );
 						// We need to query for connected posts.
 					} else {
 						$resolver = new Connection\PostObjectConnectionResolver( $source, $request_args, $context, $info, $args['to_object_name'] );
@@ -94,27 +73,14 @@ class ConnectionsRegistrar implements Hookable {
 		);
 	}
 
-	private function should_create_connection( array $connection ) : bool {
-		return $this->should_connect_object( $connection['from'] )
-			&& $this->should_connect_object( $connection['to'] );
-	}
-
-	private function should_connect_object( string $object_name ) : bool {
-		return 'user' === $object_name || $this->is_post_type_in_schema( $object_name );
-	}
-
-	private function is_post_type_in_schema( string $post_type_name ) : bool {
-		$post_type_names = array_map( fn( $post_type ) => $post_type->name, $this->post_types );
-
-		return in_array( $post_type_name, $post_type_names, true );
-	}
-
-	private function get_graphql_single_name( string $object_name ) : string {
+	private static function get_graphql_single_name( string $object_name ) : string {
 		if ( 'user' === $object_name ) {
 			return 'User';
 		}
 
-		$post_object = $this->array_find( $this->post_types, fn( $post_type ) => $post_type->name === $object_name );
+		$post_types = self::get_post_types();
+
+		$post_object = self::array_find( $post_types, fn( $post_type ) => $post_type->name === $object_name );
 
 		return $post_object->graphql_single_name;
 	}
@@ -128,7 +94,7 @@ class ConnectionsRegistrar implements Hookable {
 	 *
 	 * @return mixed The value of the element, or null if not found.
 	 */
-	private function array_find( array $array, callable $callback ) {
+	private static function array_find( array $array, callable $callback ) {
 		foreach ( $array as $key => $value ) {
 			if ( $callback( $value, $key, $array ) ) {
 				return $value;

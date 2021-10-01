@@ -1,30 +1,24 @@
 <?php
 
-namespace WPGraphQLPostsToPosts\WPGraphQL\Types;
+namespace WPGraphQLPostsToPosts\Types;
 
-use P2P_Connection_Type;
-use GraphQL\Type\Definition\ResolveInfo;
-use WPGraphQL;
-use WPGraphQL\AppContext;
-use WPGraphQL\Data\DataSource;
-use WPGraphQL\Data\Connection;
-use WPGraphQL\Model\User;
 use WPGraphQLPostsToPosts\Interfaces\Hookable;
-use WPGraphQLPostsToPosts\WPGraphQL\Types\Fields;
+use WPGraphQLPostsToPosts\Traits\ObjectsTrait;
+use WPGraphQLPostsToPosts\Types\Fields;
 
 class Post implements Hookable {
 
-	use Objects;
+	use ObjectsTrait;
 
-	public function register_hooks() {
+	public function register_hooks() : void {
 		add_action( 'p2p_registered_connection_type', [ $this, 'capture_p2p_connections' ], 10, 2 );
-		add_action( 'graphql_register_types', [ $this, 'set_post_types_property' ] );
 		add_action( 'graphql_register_types', [ $this, 'register_where_input_fields' ] );
 		add_filter( 'graphql_map_input_fields_to_wp_query', [ $this, 'modify_query_input_fields' ], 10, 6 );
 	}
 
-	public function register_where_input_fields() {
-		foreach ( $this->post_types as $post_type ) {
+	public function register_where_input_fields() : void {
+		$post_types = self::get_post_types();
+		foreach ( $post_types as $post_type ) {
 			$graphql_single_name = $post_type->graphql_single_name;
 
 			register_graphql_field(
@@ -45,7 +39,9 @@ class Post implements Hookable {
 		$field_names = [];
 		$post__in    = [];
 
-		foreach ( $this->post_types as $post_type ) {
+		$post_types = self::get_post_types();
+
+		foreach ( $post_types as $post_type ) {
 			$connection_name = $post_type->name;
 
 			$connections = array_filter( $p2p_connections_to_map, fn( $p2p_connection ) => $p2p_connection['from'] === $connection_name || $p2p_connection['to'] === $connection_name );
@@ -55,7 +51,7 @@ class Post implements Hookable {
 			}
 		}
 
-		if ( count( 1 === $query_args['postToPostConnections'] ) ) {
+		if ( 1 === count( $query_args['postToPostConnections'] ) ) {
 			$connection = $query_args['postToPostConnections'][0]['connection'];
 
 			if ( in_array( $connection, $field_names, true ) ) {
@@ -70,19 +66,19 @@ class Post implements Hookable {
 			if ( in_array( $post_to_post_connection['connection'], $field_names, true ) ) {
 				$connected_type = $post_to_post_connection['connection'];
 
-				$connected = new \WP_Query(
-					[
-						'posts_per_page'         => 1000,
-						'fields'                 => 'ids',
-						'connected_type'         => $connected_type,
-						'connected_items'        => array_map( 'absint', $post_to_post_connection['ids'] ),
-						'no_found_rows'          => true,
-						'update_post_meta_cache' => false,
-						'update_post_term_cache' => false,
-					]
-				);
+				$connected_query_args = [
+					'posts_per_page'         => 1000,
+					'fields'                 => 'ids',
+					'connected_type'         => $connected_type,
+					'connected_items'        => array_map( 'absint', $post_to_post_connection['ids'] ),
+					'no_found_rows'          => true,
+					'update_post_meta_cache' => false,
+					'update_post_term_cache' => false,
+				];
 
-				$post_ids = $connected->posts;
+				$connected = new \WP_Query( $connected_query_args );
+
+				$post_ids = $connected->get_posts();
 
 				if ( ! $post_ids ) {
 					$query_args['post__in'] = [ 0 ];
