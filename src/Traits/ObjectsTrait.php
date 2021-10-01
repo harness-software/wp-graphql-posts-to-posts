@@ -41,7 +41,7 @@ trait ObjectsTrait {
 	}
 
 	public static function is_post_type_in_schema( string $post_type_name ) : bool {
-		$post_type_names = array_map( fn( $post_type ) => $post_type->name, self::$post_types );
+		$post_type_names = array_map( fn( $post_type ) => $post_type->name, self::get_post_types() );
 
 		return in_array( $post_type_name, $post_type_names, true );
 	}
