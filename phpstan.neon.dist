@@ -1,5 +1,5 @@
 parameters:
-		level: 1
+		level: 8
 		inferPrivatePropertyTypeFromConstructor: true
 		checkMissingIterableValueType: false
 		featureToggles:
@@ -13,4 +13,5 @@ parameters:
 			- ../wp-graphql/
 			- ../posts-to-posts/
 		ignoreErrors:
-			- '#^Function apply_filters(_ref_array)? invoked with ([1-9]|1[0-2]) parameters, 2 required\.$#'
+			- '#^Call to an undefined method object::disconnect\(\).$#'
+			- '#^Call to an undefined method object::connect\(\).$#'
