@@ -38,7 +38,7 @@ class Inputs implements Hookable {
 				'description' => __( 'PostToPostConnections type.', 'wp-graphql-posts-to-posts' ),
 				'fields'      => [
 					'connection' => [
-						'type'        => 'String',
+						'type'        => 'PostsToPostsConnectionNameEnum',
 						'description' => __( 'connection type.', 'wp-graphql-posts-to-posts' ),
 					],
 					'ids'        => [
@@ -59,7 +59,7 @@ class Inputs implements Hookable {
 				'description' => __( 'PostToPostConnections type.', 'wp-graphql-posts-to-posts' ),
 				'fields'      => [
 					'connection' => [
-						'type'        => 'String',
+						'type'        => 'PostsToPostsConnectionNameEnum',
 						'description' => __( 'connection type.', 'wp-graphql-posts-to-posts' ),
 					],
 					'ids'        => [
