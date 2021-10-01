@@ -45,6 +45,10 @@ class User implements Hookable {
 			}
 		}
 
+		if ( ! isset( $query_args['postToPostConnections'] ) ) {
+			return $query_args;
+		}
+
 		if ( 1 === count( $query_args['postToPostConnections'] ) ) {
 			$connection = $query_args['postToPostConnections'][0]['connection'];
 
