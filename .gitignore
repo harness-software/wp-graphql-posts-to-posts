@@ -24,7 +24,7 @@ sonar-scanner
 tests/*.suite.yml
 Thumbs.db
 wp-cli.local.yml
-vendor
+vendor/*
 !vendor/composer
 !vendor/composer/*
 !vendor/autoload.php
