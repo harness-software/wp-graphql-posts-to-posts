@@ -55,7 +55,9 @@ class UserMutation extends AbstractMutation {
 
 			$connected_type = $post_to_post_connection['connection'];
 
-			if ( ( ! $post_to_post_connection['append'] || 0 === count( $post_to_post_connection['ids'] ) ) && false === strpos( $mutation_name, 'Create' ) ) {
+			$should_append = isset( $post_to_post_connection['append'] ) ? $post_to_post_connection['append'] : false;
+
+			if ( ( ! $should_append || 0 === count( $post_to_post_connection['ids'] ) ) && false === strpos( $mutation_name, 'Create' ) ) {
 				$connected_ids = [];
 
 				$connected_query_args = [

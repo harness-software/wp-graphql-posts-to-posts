@@ -6,12 +6,13 @@ use WP_Post_Type;
 use WPGraphQLPostsToPosts\Types\Fields;
 
 class PostMutation extends AbstractMutation {
-	public function register_hooks() : void {
+
+	public function register_hooks(): void {
 		parent::register_hooks();
 		add_action( 'graphql_post_object_mutation_update_additional_data', [ $this, 'save_additional_data' ], 10, 4 );
 	}
 
-	public function register_input_fields() : void {
+	public function register_input_fields(): void {
 		$post_types = self::get_post_types();
 
 		foreach ( $post_types as $post_type ) {
@@ -36,7 +37,7 @@ class PostMutation extends AbstractMutation {
 		}
 	}
 
-	public function save_additional_data( int $post_id, array $input, WP_Post_Type $post_type_object, string $mutation_name ) : void {
+	public function save_additional_data( int $post_id, array $input, WP_Post_Type $post_type_object, string $mutation_name ): void {
 		if ( ! isset( $input['postToPostConnections'] ) || ! is_array( $input['postToPostConnections'] ) ) {
 			return;
 		}
@@ -53,7 +54,7 @@ class PostMutation extends AbstractMutation {
 
 			$connection_name = $post_type->name;
 
-			$connections = array_filter( $p2p_connections_to_map, fn( $p2p_connection ) => $p2p_connection['from'] === $connection_name || $p2p_connection['to'] === $connection_name );
+			$connections = array_filter( $p2p_connections_to_map, fn ( $p2p_connection) => $p2p_connection['from'] === $connection_name || $p2p_connection['to'] === $connection_name );
 
 			foreach ( $connections as $connection ) {
 				array_push( $field_names, $connection['name'] );
@@ -66,7 +67,9 @@ class PostMutation extends AbstractMutation {
 
 				$connected_type = $post_to_post_connection['connection'];
 
-				if ( ( ! $post_to_post_connection['append'] || 0 === count( $post_to_post_connection['ids'] ) ) && false === strpos( $mutation_name, 'Create' ) ) {
+				$should_append = isset( $post_to_post_connection['append'] ) ? $post_to_post_connection['append'] : false;
+
+				if ( ( ! $should_append || 0 === count( $post_to_post_connection['ids'] ) ) && false === strpos( $mutation_name, 'Create' ) ) {
 					$connection_to = null;
 
 					foreach ( $connections as $connection ) {
@@ -109,9 +112,10 @@ class PostMutation extends AbstractMutation {
 		}
 	}
 
-	protected static function camel_case_to_underscores( string $string ) : string {
+	protected static function camel_case_to_underscores( string $string ): string {
 		if ( 0 === preg_match( '/[A-Z]/', $string ) ) {
-			return $string; }
+			return $string;
+		}
 		$pattern          = '/([a-z])([A-Z])/';
 		$replaced_str     = strtolower(
 			(string) preg_replace_callback(
