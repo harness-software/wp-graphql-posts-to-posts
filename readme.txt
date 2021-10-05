@@ -6,7 +6,7 @@ Tested up to: 5.8
 Requires PHP: 7.4
 Requires Posts To Posts: 1.6.6+
 Requires WPGraphQL: 1.0.0+
-Stable tag: 0.2.0
+Stable tag: 0.2.1
 Maintained at: https://github.com/harness-software/wp-graphql-posts-to-posts
 License: GPL-3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
