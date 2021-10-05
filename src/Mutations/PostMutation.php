@@ -37,6 +37,10 @@ class PostMutation extends AbstractMutation {
 	}
 
 	public function save_additional_data( int $post_id, array $input, WP_Post_Type $post_type_object, string $mutation_name ) : void {
+		if ( ! isset( $input['postToPostConnections'] ) || ! is_array( $input['postToPostConnections'] ) ) {
+			return;
+		}
+
 		$post_types = self::get_post_types();
 		foreach ( $post_types as $post_type ) {
 			if ( self::camel_case_to_underscores( $mutation_name ) !== $post_type->name ) {
