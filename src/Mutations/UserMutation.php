@@ -30,6 +30,10 @@ class UserMutation extends AbstractMutation {
 	}
 
 	public function save_additional_data( int $user_id, array $input, string $mutation_name ) : void {
+		if ( ! isset( $input['postToPostConnections'] ) || ! is_array( $input['postToPostConnections'] ) ) {
+			return;
+		}
+
 		if ( 'updateUser' !== $mutation_name ) {
 			return;
 		}
