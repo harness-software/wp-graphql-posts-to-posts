@@ -40,11 +40,11 @@ class Inputs implements Hookable {
 				'fields'      => [
 					'connections' => [
 						'type'        => [ 'list_of' => Fields::QUERY_TYPE ],
-						'description' => __( 'The post to post connection and ids', 'wp-graphql-posts-to-posts' ),
+						'description' => __( 'The post to post connections and ids', 'wp-graphql-posts-to-posts' ),
 					],
 					'relation'    => [
 						'type'        => 'RelationEnum',
-						'description' => __( 'Relation enum.', 'wp-graphql-posts-to-posts' ),
+						'description' => __( 'Relation enum between the P2P connections.', 'wp-graphql-posts-to-posts' ),
 					],
 				],
 			]
