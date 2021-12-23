@@ -18,9 +18,9 @@ class User implements Hookable {
 	public function register_where_input_fields() : void {
 		register_graphql_field(
 			'RootQueryToUserConnectionWhereArgs',
-			Fields::NAME,
+			Fields::PARENT_QUERY_TYPE,
 			[
-				'type'        => [ 'list_of' => Fields::QUERY_TYPE ],
+				'type'        => Fields::PARENT_QUERY_TYPE,
 				'description' => __( 'Id', 'wp-graphql-posts-to-posts' ),
 			]
 		);
@@ -44,22 +44,29 @@ class User implements Hookable {
 			}
 		}
 
-		if ( ! isset( $query_args['postToPostConnections'] ) ) {
+		if ( ! isset( $query_args['postToPostConnectionQuery'] ) ) {
 			return $query_args;
 		}
 
-		if ( 1 === count( $query_args['postToPostConnections'] ) ) {
-			$connection = $query_args['postToPostConnections'][0]['connection'];
+		if ( empty( $query_args['postToPostConnectionQuery']['connections'] ) ) {
+			return $query_args;
+		}
+
+		$connections = $query_args['postToPostConnectionQuery']['connections'];
+		$relation    = ! empty( $query_args['postToPostConnectionQuery']['relation'] ) ? $query_args['postToPostConnectionQuery']['relation'] : 'AND';
+
+		if ( 1 === count( $connections ) ) {
+			$connection = $connections[0]['connection'];
 
 			if ( in_array( $connection, $field_names, true ) ) {
 				$connected_type                = $connection;
 				$query_args['connected_type']  = sanitize_text_field( $connected_type );
-				$query_args['connected_items'] = array_map( 'absint', $query_args['postToPostConnections'][0]['ids'] );
+				$query_args['connected_items'] = array_map( 'absint', $connections[0]['ids'] );
 				return $query_args;
 			}
 		}
 
-		foreach ( $query_args['postToPostConnections'] as $post_to_post_connection ) {
+		foreach ( $connections as $post_to_post_connection ) {
 			if ( in_array( $post_to_post_connection['connection'], $field_names, true ) ) {
 				$connected_type = $post_to_post_connection['connection'];
 
@@ -79,16 +86,15 @@ class User implements Hookable {
 
 				$user_ids = $connected->get_results();
 
-				if ( ! $user_ids ) {
-					$query_args['include'] = [ 0 ];
-					return $query_args;
+				if ( 'AND' === $relation ) {
+					$include = $include ? array_values( array_intersect( $include, $user_ids ) ) : $user_ids;
+				} else {
+					$include = $include ? array_values( array_merge( $include, $user_ids ) ) : $user_ids;
 				}
-
-				$include = $include ? array_values( array_intersect( $include, $user_ids ) ) : $user_ids;
 			}
 		}
 
-		$query_args['include'] = $include;
+		$query_args['include'] = empty( $include ) ? [ 0 ] : $include;
 
 		return $query_args;
 	}

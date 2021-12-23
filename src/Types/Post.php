@@ -2,7 +2,6 @@
 
 namespace WPGraphQLPostsToPosts\Types;
 
-use \WPGraphQL\Type\Enum\RelationEnum;
 use WPGraphQLPostsToPosts\Interfaces\Hookable;
 use WPGraphQLPostsToPosts\Traits\ObjectsTrait;
 use WPGraphQLPostsToPosts\Types\Fields;
