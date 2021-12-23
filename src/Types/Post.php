@@ -90,10 +90,10 @@ class Post implements Hookable {
 
 				$post_ids = $connected->get_posts();
 
-				if ( ! $post_ids && 'AND' === $relation ) {
-					$query_args['post__in'] = [ 0 ];
-					return $query_args;
-				}
+				// if ( ! $post_ids && 'AND' === $relation ) {
+				// 	$query_args['post__in'] = [ 0 ];
+				// 	return $query_args;
+				// }
 
 				if ( 'AND' === $relation ) {
 					$post__in = $post__in ? array_values( array_intersect( $post__in, $post_ids ) ) : $post_ids;
@@ -103,7 +103,7 @@ class Post implements Hookable {
 			}
 		}
 
-		$query_args['post__in'] = $post__in;
+		$query_args['post__in'] = empty( $post__in ) ? [ 0 ] : $post__in;
 
 		return $query_args;
 	}
