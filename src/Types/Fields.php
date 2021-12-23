@@ -9,9 +9,10 @@ use WPGraphQLPostsToPosts\Traits\ObjectsTrait;
 class Fields implements Hookable {
 	use ObjectsTrait;
 
-	const QUERY_TYPE    = 'PostToPostConnections';
-	const MUTATION_TYPE = 'PostToPostConnectionsMutate';
-	const NAME          = 'postToPostConnections';
+	const PARENT_QUERY_TYPE = 'PostToPostConnectionQuery';
+	const QUERY_TYPE        = 'PostToPostConnections';
+	const MUTATION_TYPE     = 'PostToPostConnectionsMutate';
+	const NAME              = 'postToPostConnections';
 
 	/**
 	 * Registered Posts2Posts connections.

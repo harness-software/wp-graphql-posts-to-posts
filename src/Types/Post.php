@@ -2,6 +2,7 @@
 
 namespace WPGraphQLPostsToPosts\Types;
 
+use \WPGraphQL\Type\Enum\RelationEnum;
 use WPGraphQLPostsToPosts\Interfaces\Hookable;
 use WPGraphQLPostsToPosts\Traits\ObjectsTrait;
 use WPGraphQLPostsToPosts\Types\Fields;
@@ -22,9 +23,9 @@ class Post implements Hookable {
 
 			register_graphql_field(
 				'RootQueryTo' . $graphql_single_name . 'ConnectionWhereArgs',
-				Fields::NAME,
+				Fields::PARENT_QUERY_TYPE,
 				[
-					'type'        => [ 'list_of' => Fields::QUERY_TYPE ],
+					'type'        => Fields::PARENT_QUERY_TYPE,
 					'description' => __( 'Id', 'wp-graphql-posts-to-posts' ),
 				]
 			);
@@ -50,22 +51,28 @@ class Post implements Hookable {
 			}
 		}
 
-		if ( ! isset( $query_args['postToPostConnections'] ) ) {
+		if ( ! isset( $query_args['postToPostConnectionQuery'] ) ) {
 			return $query_args;
 		}
 
-		if ( 1 === count( $query_args['postToPostConnections'] ) ) {
-			$connection = $query_args['postToPostConnections'][0]['connection'];
+		if ( empty( $query_args['postToPostConnectionQuery']['connections'] ) ) {
+			return $query_args;
+		}
+		$connections = $query_args['postToPostConnectionQuery']['connections'];
+		$relation    = $query_args['postToPostConnectionQuery']['relation'] ?: 'AND';
+
+		if ( 1 === count( $connections ) ) {
+			$connection = $connections[0]['connection'];
 
 			if ( in_array( $connection, $field_names, true ) ) {
 				$connected_type                = $connection;
 				$query_args['connected_type']  = sanitize_text_field( $connected_type );
-				$query_args['connected_items'] = array_map( 'absint', $query_args['postToPostConnections'][0]['ids'] );
+				$query_args['connected_items'] = array_map( 'absint', $connections[0]['ids'] );
 				return $query_args;
 			}
 		}
 
-		foreach ( $query_args['postToPostConnections'] as $post_to_post_connection ) {
+		foreach ( $connections as $post_to_post_connection ) {
 			if ( in_array( $post_to_post_connection['connection'], $field_names, true ) ) {
 				$connected_type = $post_to_post_connection['connection'];
 
@@ -83,12 +90,16 @@ class Post implements Hookable {
 
 				$post_ids = $connected->get_posts();
 
-				if ( ! $post_ids ) {
+				if ( ! $post_ids && 'AND' === $relation ) {
 					$query_args['post__in'] = [ 0 ];
 					return $query_args;
 				}
 
-				$post__in = $post__in ? array_values( array_intersect( $post__in, $post_ids ) ) : $post_ids;
+				if ( 'AND' === $relation ) {
+					$post__in = $post__in ? array_values( array_intersect( $post__in, $post_ids ) ) : $post_ids;
+				} else {
+					$post__in = $post__in ? array_values( array_merge( $post__in, $post_ids ) ) : $post_ids;
+				}
 			}
 		}
 

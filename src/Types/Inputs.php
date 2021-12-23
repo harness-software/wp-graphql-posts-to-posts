@@ -4,6 +4,7 @@
  */
 namespace WPGraphQLPostsToPosts\Types;
 
+use WPGraphQL\Type\Enum\RelationEnum;
 use WPGraphQLPostsToPosts\Interfaces\Hookable;
 
 /**
@@ -27,6 +28,23 @@ class Inputs implements Hookable {
 					'ids'        => [
 						'type'        => [ 'list_of' => 'Int' ],
 						'description' => __( 'connection ids.', 'wp-graphql-posts-to-posts' ),
+					],
+				],
+			]
+		);
+
+		register_graphql_input_type(
+			Fields::PARENT_QUERY_TYPE,
+			[
+				'description' => __( 'Post to post connection query type.', 'wp-graphql-posts-to-posts' ),
+				'fields'      => [
+					'connections' => [
+						'type'        => [ 'list_of' => Fields::QUERY_TYPE ],
+						'description' => __( 'The post to post connection and ids', 'wp-graphql-posts-to-posts' ),
+					],
+					'relation'    => [
+						'type'        => 'RelationEnum',
+						'description' => __( 'Relation enum.', 'wp-graphql-posts-to-posts' ),
 					],
 				],
 			]
