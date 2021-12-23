@@ -59,7 +59,7 @@ class Post implements Hookable {
 			return $query_args;
 		}
 		$connections = $query_args['postToPostConnectionQuery']['connections'];
-		$relation    = $query_args['postToPostConnectionQuery']['relation'] ?: 'AND';
+		$relation    = ! empty( $query_args['postToPostConnectionQuery']['relation'] ) ? $query_args['postToPostConnectionQuery']['relation'] : 'AND';
 
 		if ( 1 === count( $connections ) ) {
 			$connection = $connections[0]['connection'];
