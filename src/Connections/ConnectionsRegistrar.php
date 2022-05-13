@@ -27,12 +27,13 @@ class ConnectionsRegistrar implements Hookable
             return;
         }
 
-        foreach ($relationships as $relationship) {
+        foreach ($relationships as $rel_key => $relationship) {
             foreach ($relationship['from']['object_name'] as $from_post_type) {
 
                 foreach ($relationship['to']['object_name'] as $to_post_type) {
                     $this->register_connection(
                         [
+                            'rel_key' => $rel_key,
                             'from_object_name' => $from_post_type,
                             'to_object_name' => $to_post_type,
                             'connection_name' => $from_post_type . "_to_" . $to_post_type,
@@ -45,6 +46,7 @@ class ConnectionsRegistrar implements Hookable
 
                     $this->register_connection(
                         [
+                            'rel_key' => $rel_key,
                             'from_object_name' => $to_post_type,
                             'to_object_name' => $from_post_type,
                             'connection_name' => $to_post_type . "_to_" . $from_post_type,
@@ -96,11 +98,15 @@ class ConnectionsRegistrar implements Hookable
 
     private function register_connection(array $args): void
     {
+        $from_gql_single_name = self::get_graphql_single_name($args['from_object_name']);
+        $to_gql_single_name = self::get_graphql_single_name($args['to_object_name']);
+        $field_name = graphql_format_field_name($args['connection_name'] . 'Connection');
+
         register_graphql_connection(
             [
-                'fromType' => self::get_graphql_single_name($args['from_object_name']),
-                'toType' => self::get_graphql_single_name($args['to_object_name']),
-                'fromFieldName' => graphql_format_field_name($args['connection_name'] . 'Connection'),
+                'fromType' => $from_gql_single_name,
+                'toType' => $to_gql_single_name,
+                'fromFieldName' => $field_name,
                 'resolve' => function ($source, array $request_args, AppContext $context, ResolveInfo $info) use ($args) {
                     // We need to query for connected users.
                     if ('user' === $args['to_object_name']) {
@@ -112,9 +118,18 @@ class ConnectionsRegistrar implements Hookable
                         $resolver->set_query_arg('author', null);
                     }
 
+
                     $source_object_id = $source instanceof User ? $source->userId : $source->ID;
-                    $resolver->set_query_arg('connected_items', $source_object_id);
-                    $resolver->set_query_arg('connected_type', $args['connection_name']);
+                    $variant = get_p2p_plugin_variant();
+                    if ($variant === "wpcentrics") {
+                        $resolver->set_query_arg('p2p_rel_key', $args['rel_key']);
+                        $resolver->set_query_arg('p2p_rel_post_id', $source_object_id);
+                        $resolver->set_query_arg('p2p_rel_direction', $args['any']);
+                    } else {
+                        $resolver->set_query_arg('connected_items', $source_object_id);
+                        $resolver->set_query_arg('connected_type', $args['connection_name']);
+                    }
+
                     $connection = $resolver->get_connection();
 
                     return $connection;
