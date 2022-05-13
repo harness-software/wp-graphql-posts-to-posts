@@ -1,13 +1,25 @@
 <?php
 /**
- * Plugin Name: WPGraphQL for Posts 2 Posts
- * Description: Creates WPGraphQL connections for all of your Posts 2 Posts connections.
+ * Plugin Name: WPGraphQL for Posts 2 Posts Fork
+ * Description: Creates WPGraphQL connections for all of your Posts 2 Posts Relationships connections.
  * Version:     0.2.2
- * Author:      Harness Software, Kellen Mace
+ * Author:      Harness Software, Kellen Mace, Ellytronic Media, Elly Post
  * Author URI:  https://harnessup.com/
  * License:     GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
+
+function get_p2p_plugin_variant(): string|bool {
+    if(is_plugin_active('posts-2-posts-relationships/posts-2-posts-relationships.php')) {
+        return "wpcentrics";
+    }
+
+    if (function_exists('_p2p_load')) {
+        return "scribu";
+    }
+
+    return false;
+}
 
 add_action(
 	'plugins_loaded',
@@ -16,9 +28,10 @@ add_action(
 
 		$dependencies = [
 			'Composer autoload files' => is_readable( $autoload ),
-			'WPGraphQL'               => class_exists( 'WPGraphQL' ),
-			'Posts 2 Posts'           => function_exists( '_p2p_load' ),
+            'WPGraphQL'               => is_plugin_active('wp-graphql/wp-graphql.php'),
+            'Posts 2 Posts'           => get_p2p_plugin_variant() !== false,
 		];
+
 
 		$missing_dependencies = array_keys( array_diff( $dependencies, array_filter( $dependencies ) ) );
 
