@@ -10,97 +10,149 @@ use WPGraphQLPostsToPosts\Interfaces\Hookable;
 use WPGraphQLPostsToPosts\Traits\ObjectsTrait;
 use WPGraphQLPostsToPosts\Types\Fields;
 
-class ConnectionsRegistrar implements Hookable {
-	use ObjectsTrait;
+class ConnectionsRegistrar implements Hookable
+{
+    use ObjectsTrait;
 
-	public function register_hooks() : void {
-		add_action( get_graphql_register_action(), [ $this, 'register_connections' ], 11 );
-	}
+    public function register_hooks(): void
+    {
+        add_action(get_graphql_register_action(), [$this, 'register_connections'], 11);
+    }
 
-	public function register_connections() : void {
-		$p2p_connections_to_map = Fields::get_p2p_connections();
+    public function register_connections_p2p_relationships(): void
+    {
+        $obj = new \P2P_Relationships;
+        $relationships = $obj->get_relationships();
+        if (empty($relationships)) {
+            return;
+        }
 
-		foreach ( $p2p_connections_to_map as $p2p_connection ) {
-			// Register from -> to connection.
-			$this->register_connection(
-				[
-					'from_object_name' => $p2p_connection['from'],
-					'to_object_name'   => $p2p_connection['to'],
-					'connection_name'  => $p2p_connection['name'],
-				]
-			);
+        foreach ($relationships as $relationship) {
+            foreach ($relationship['from']['object_name'] as $from_post_type) {
 
-			if ( $p2p_connection['from'] === $p2p_connection['to'] ) {
-				continue;
-			}
+                foreach ($relationship['to']['object_name'] as $to_post_type) {
+                    $this->register_connection(
+                        [
+                            'from_object_name' => $from_post_type,
+                            'to_object_name' => $to_post_type,
+                            'connection_name' => $from_post_type . "_to_" . $to_post_type,
+                        ]
+                    );
 
-			// Register to -> from connection.
-			$this->register_connection(
-				[
-					'from_object_name' => $p2p_connection['to'],
-					'to_object_name'   => $p2p_connection['from'],
-					'connection_name'  => $p2p_connection['name'],
-				]
-			);
-		}
-	}
+                    if ($from_post_type === $to_post_type) {
+                        continue;
+                    }
 
-	private function register_connection( array $args ) : void {
-		register_graphql_connection(
-			[
-				'fromType'      => self::get_graphql_single_name( $args['from_object_name'] ),
-				'toType'        => self::get_graphql_single_name( $args['to_object_name'] ),
-				'fromFieldName' => graphql_format_field_name( $args['connection_name'] . 'Connection' ),
-				'resolve'       => function( $source, array $request_args, AppContext $context, ResolveInfo $info ) use ( $args ) {
-					// We need to query for connected users.
-					if ( 'user' === $args['to_object_name'] ) {
-						$resolver = new Connection\UserConnectionResolver( $source, $request_args, $context, $info );
-						// We need to query for connected posts.
-					} else {
-						$resolver = new Connection\PostObjectConnectionResolver( $source, $request_args, $context, $info, $args['to_object_name'] );
-						$resolver->set_query_arg( 'post_parent', null );
-						$resolver->set_query_arg( 'author', null );
-					}
+                    $this->register_connection(
+                        [
+                            'from_object_name' => $to_post_type,
+                            'to_object_name' => $from_post_type,
+                            'connection_name' => $to_post_type . "_to_" . $from_post_type,
+                        ]
+                    );
+                }
+            }
+        }
+    }
 
-					$source_object_id = $source instanceof User ? $source->userId : $source->ID;
-					$resolver->set_query_arg( 'connected_items', $source_object_id );
-					$resolver->set_query_arg( 'connected_type', $args['connection_name'] );
-					$connection = $resolver->get_connection();
+    public function register_connections_p2p_scribu(): void
+    {
+        $p2p_connections_to_map = Fields::get_p2p_connections();
 
-					return $connection;
-				},
-			]
-		);
-	}
+        foreach ($p2p_connections_to_map as $p2p_connection) {
+            // Register from -> to connection.
+            $this->register_connection(
+                [
+                    'from_object_name' => $p2p_connection['from'],
+                    'to_object_name' => $p2p_connection['to'],
+                    'connection_name' => $p2p_connection['name'],
+                ]
+            );
 
-	private static function get_graphql_single_name( string $object_name ) : string {
-		if ( 'user' === $object_name ) {
-			return 'User';
-		}
+            if ($p2p_connection['from'] === $p2p_connection['to']) {
+                continue;
+            }
 
-		$post_types = self::get_post_types();
+            // Register to -> from connection.
+            $this->register_connection(
+                [
+                    'from_object_name' => $p2p_connection['to'],
+                    'to_object_name' => $p2p_connection['from'],
+                    'connection_name' => $p2p_connection['name'],
+                ]
+            );
+        }
+    }
 
-		$post_object = self::array_find( $post_types, fn( $post_type ) => $post_type->name === $object_name );
+    public function register_connections(): void
+    {
+        $variant = get_p2p_plugin_variant();
+        if ($variant === "wpcentrics") {
+            $this->register_connections_p2p_relationships();;
+        } else {
+            $this->register_connections_p2p_scribu();
+        }
+    }
 
-		return $post_object->graphql_single_name;
-	}
+    private function register_connection(array $args): void
+    {
+        register_graphql_connection(
+            [
+                'fromType' => self::get_graphql_single_name($args['from_object_name']),
+                'toType' => self::get_graphql_single_name($args['to_object_name']),
+                'fromFieldName' => graphql_format_field_name($args['connection_name'] . 'Connection'),
+                'resolve' => function ($source, array $request_args, AppContext $context, ResolveInfo $info) use ($args) {
+                    // We need to query for connected users.
+                    if ('user' === $args['to_object_name']) {
+                        $resolver = new Connection\UserConnectionResolver($source, $request_args, $context, $info);
+                        // We need to query for connected posts.
+                    } else {
+                        $resolver = new Connection\PostObjectConnectionResolver($source, $request_args, $context, $info, $args['to_object_name']);
+                        $resolver->set_query_arg('post_parent', null);
+                        $resolver->set_query_arg('author', null);
+                    }
 
-	/**
-	 * Get the value of the first array element that satisfies the callback function.
-	 * Similar to JavaScript's Array.prototype.find() method.
-	 *
-	 * @param array    $array    The array.
-	 * @param callable $callback The callback function.
-	 *
-	 * @return mixed The value of the element, or null if not found.
-	 */
-	private static function array_find( array $array, callable $callback ) {
-		foreach ( $array as $key => $value ) {
-			if ( $callback( $value, $key, $array ) ) {
-				return $value;
-			}
-		}
+                    $source_object_id = $source instanceof User ? $source->userId : $source->ID;
+                    $resolver->set_query_arg('connected_items', $source_object_id);
+                    $resolver->set_query_arg('connected_type', $args['connection_name']);
+                    $connection = $resolver->get_connection();
 
-		return null;
-	}
+                    return $connection;
+                },
+            ]
+        );
+    }
+
+    private static function get_graphql_single_name(string $object_name): string
+    {
+        if ('user' === $object_name) {
+            return 'User';
+        }
+
+        $post_types = self::get_post_types();
+
+        $post_object = self::array_find($post_types, fn($post_type) => $post_type->name === $object_name);
+
+        return $post_object->graphql_single_name;
+    }
+
+    /**
+     * Get the value of the first array element that satisfies the callback function.
+     * Similar to JavaScript's Array.prototype.find() method.
+     *
+     * @param array $array The array.
+     * @param callable $callback The callback function.
+     *
+     * @return mixed The value of the element, or null if not found.
+     */
+    private static function array_find(array $array, callable $callback)
+    {
+        foreach ($array as $key => $value) {
+            if ($callback($value, $key, $array)) {
+                return $value;
+            }
+        }
+
+        return null;
+    }
 }
