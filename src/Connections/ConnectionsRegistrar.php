@@ -124,7 +124,7 @@ class ConnectionsRegistrar implements Hookable
                     if ($variant === "wpcentrics") {
                         $resolver->set_query_arg('p2p_rel_key', $args['rel_key']);
                         $resolver->set_query_arg('p2p_rel_post_id', $source_object_id);
-                        $resolver->set_query_arg('p2p_rel_direction', $args['any']);
+                        $resolver->set_query_arg('p2p_rel_direction', 'any');
                     } else {
                         $resolver->set_query_arg('connected_items', $source_object_id);
                         $resolver->set_query_arg('connected_type', $args['connection_name']);
