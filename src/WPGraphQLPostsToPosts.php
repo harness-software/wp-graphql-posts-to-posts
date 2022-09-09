@@ -25,8 +25,8 @@ final class WPGraphQLPostsToPosts {
 
 	private function create_instances() : void {
 		$this->instances['connections_registrar'] = new Connections\ConnectionsRegistrar();
-		$this->instances['input_types']           = new Types\Inputs();
 		$this->instances['field_types']           = new Types\Fields();
+		$this->instances['input_types']           = new Types\Inputs();
 		$this->instances['post']                  = new Types\Post();
 		$this->instances['user']                  = new Types\User();
 		$this->instances['post_mutation']         = new Mutations\PostMutation();
