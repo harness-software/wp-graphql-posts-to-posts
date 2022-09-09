@@ -14,7 +14,7 @@ class ConnectionsRegistrar implements Hookable {
 	use ObjectsTrait;
 
 	public function register_hooks() : void {
-		add_action( get_graphql_register_action(), [ $this, 'register_connections' ], 11 );
+		add_action( 'graphql_register_types', [ $this, 'register_connections' ], 11 );
 	}
 
 	public function register_connections() : void {
