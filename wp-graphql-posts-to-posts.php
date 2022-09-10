@@ -2,7 +2,7 @@
 /**
  * Plugin Name: WPGraphQL for Posts 2 Posts
  * Description: Creates WPGraphQL connections for all of your Posts 2 Posts connections.
- * Version:     0.2.2
+ * Version:     0.5.0
  * Author:      Harness Software, Kellen Mace
  * Author URI:  https://harnessup.com/
  * License:     GPLv2 or later
