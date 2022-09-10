@@ -11,7 +11,7 @@ class Post implements Hookable {
 	use ObjectsTrait;
 
 	public function register_hooks() : void {
-		add_action( get_graphql_register_action(), [ $this, 'register_where_input_fields' ] );
+		add_action( 'graphql_register_types_late', [ $this, 'register_where_input_fields' ] );
 		add_filter( 'graphql_map_input_fields_to_wp_query', [ $this, 'modify_query_input_fields' ], 10, 6 );
 	}
 

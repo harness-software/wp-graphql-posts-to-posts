@@ -2,7 +2,7 @@
 
 namespace WPGraphQLPostsToPosts\Traits;
 
-use P2P_Connection_Type;
+use WPGraphQL;
 
 trait ObjectsTrait {
 	/**
@@ -13,9 +13,10 @@ trait ObjectsTrait {
 	public static $post_types;
 
 	public static function get_post_types() : array {
-		if ( ! isset( self::$post_types ) ) {
-			self::$post_types = get_post_types( [ 'show_in_graphql' => true ], 'objects' );
+		if ( empty( self::$post_types ) ) {
+			self::$post_types = WPGraphQL::get_allowed_post_types( 'objects' );
 		}
+
 		return self::$post_types;
 	}
 }

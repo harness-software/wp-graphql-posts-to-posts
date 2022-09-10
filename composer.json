@@ -14,15 +14,15 @@
     }
   ],
   "require": {
-    "php": ">=7.4"
+    "php": ">=7.4 || ^8.0.0"
   },
   "require-dev": {
     "dealerdirect/phpcodesniffer-composer-installer": "^0.7",
     "wp-coding-standards/wpcs": "^2.3",
     "phpcompatibility/phpcompatibility-wp": "^2.1",
     "squizlabs/php_codesniffer": "^3.6",
-    "phpstan/phpstan": "^0.12",
-    "szepeviktor/phpstan-wordpress": "^0.7",
+    "phpstan/phpstan": "^1.8",
+    "szepeviktor/phpstan-wordpress": "^1.1.2",
     "phpstan/extension-installer": "^1.1",
     "simpod/php-coveralls-mirror": "^3.0",
     "poolshark/wp-graphql-stubs": "^0.0.2"
@@ -33,9 +33,16 @@
     }
   },
   "config": {
-    "optimize-autoloader": true,
-    "process-timeout": 0
-  },
+		"optimize-autoloader": true,
+		"process-timeout": 0,
+		"platform": {
+			"php": "7.4"
+		},
+		"allow-plugins": {
+			"dealerdirect/phpcodesniffer-composer-installer": true,
+			"phpstan/extension-installer": true
+		}
+	},
   "scripts": {
     "install-test-env": "bash bin/install-test-env.sh",
     "lint": "vendor/bin/phpcs",
