@@ -3,15 +3,14 @@
 namespace WPGraphQLPostsToPosts\Connections;
 
 use GraphQL\Type\Definition\ResolveInfo;
+use WPGraphQL;
 use WPGraphQL\AppContext;
 use WPGraphQL\Data\Connection;
 use WPGraphQL\Model\User;
 use WPGraphQLPostsToPosts\Interfaces\Hookable;
-use WPGraphQLPostsToPosts\Traits\ObjectsTrait;
 use WPGraphQLPostsToPosts\Types\Fields;
 
 class ConnectionsRegistrar implements Hookable {
-	use ObjectsTrait;
 
 	public function register_hooks() : void {
 		add_action( 'graphql_register_types', [ $this, 'register_connections' ], 11 );
@@ -78,7 +77,7 @@ class ConnectionsRegistrar implements Hookable {
 			return 'User';
 		}
 
-		$post_types = self::get_post_types();
+		$post_types = WPGraphQL::get_allowed_post_types( 'objects' );
 
 		$post_object = self::array_find( $post_types, fn( $post_type ) => $post_type->name === $object_name );
 

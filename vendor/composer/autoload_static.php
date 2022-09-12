@@ -27,7 +27,6 @@ class ComposerStaticInit88e43d1b9362b0d65a816daf17f8926a
         'WPGraphQLPostsToPosts\\Mutations\\AbstractMutation' => __DIR__ . '/../..' . '/src/Mutations/AbstractMutation.php',
         'WPGraphQLPostsToPosts\\Mutations\\PostMutation' => __DIR__ . '/../..' . '/src/Mutations/PostMutation.php',
         'WPGraphQLPostsToPosts\\Mutations\\UserMutation' => __DIR__ . '/../..' . '/src/Mutations/UserMutation.php',
-        'WPGraphQLPostsToPosts\\Traits\\ObjectsTrait' => __DIR__ . '/../..' . '/src/Traits/ObjectsTrait.php',
         'WPGraphQLPostsToPosts\\Types\\Fields' => __DIR__ . '/../..' . '/src/Types/Fields.php',
         'WPGraphQLPostsToPosts\\Types\\Inputs' => __DIR__ . '/../..' . '/src/Types/Inputs.php',
         'WPGraphQLPostsToPosts\\Types\\Post' => __DIR__ . '/../..' . '/src/Types/Post.php',
