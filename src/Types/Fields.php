@@ -3,12 +3,10 @@
 namespace WPGraphQLPostsToPosts\Types;
 
 use P2P_Connection_Type;
+use WPGraphQL;
 use WPGraphQLPostsToPosts\Interfaces\Hookable;
-use WPGraphQLPostsToPosts\Traits\ObjectsTrait;
 
 class Fields implements Hookable {
-	use ObjectsTrait;
-
 	const PARENT_QUERY_TYPE = 'PostToPostConnectionQuery';
 	const QUERY_TYPE        = 'PostToPostConnections';
 	const MUTATION_TYPE     = 'PostToPostConnectionsMutate';
@@ -23,7 +21,7 @@ class Fields implements Hookable {
 
 	public function register_hooks() : void {
 		add_action( 'p2p_registered_connection_type', [ $this, 'capture_p2p_connections' ], 10, 2 );
-		add_action( get_graphql_register_action(), [ $this, 'register_connection_name_enum' ], 9 );
+		add_action( 'graphql_register_types_late', [ $this, 'register_connection_name_enum' ], 9 );
 	}
 
 	public function capture_p2p_connections( P2P_Connection_Type $ctype, array $args ) : void {
@@ -46,10 +44,9 @@ class Fields implements Hookable {
 	}
 
 	public static function is_post_type_in_schema( string $post_type_name ) : bool {
-		$post_type_names = array_map( fn( $post_type ) => $post_type->name, self::get_post_types() );
-
-		return in_array( $post_type_name, $post_type_names, true );
+		return in_array( $post_type_name, WPGraphQL::get_allowed_post_types(), true );
 	}
+
 	public function register_connection_name_enum() : void {
 		$p2p_connections_to_map = self::get_p2p_connections();
 

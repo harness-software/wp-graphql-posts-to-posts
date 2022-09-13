@@ -3,6 +3,7 @@
 namespace WPGraphQLPostsToPosts\Mutations;
 
 use WP_Post_Type;
+use WPGraphQL;
 use WPGraphQLPostsToPosts\Types\Fields;
 
 class PostMutation extends AbstractMutation {
@@ -13,7 +14,7 @@ class PostMutation extends AbstractMutation {
 	}
 
 	public function register_input_fields(): void {
-		$post_types = self::get_post_types();
+		$post_types = WPGraphQL::get_allowed_post_types( 'objects' );
 
 		foreach ( $post_types as $post_type ) {
 			$graphql_single_name = $post_type->graphql_single_name;
@@ -42,7 +43,7 @@ class PostMutation extends AbstractMutation {
 			return;
 		}
 
-		$post_types = self::get_post_types();
+		$post_types = WPGraphQL::get_allowed_post_types( 'objects' );
 		foreach ( $post_types as $post_type ) {
 			if ( self::camel_case_to_underscores( $mutation_name ) !== $post_type->name ) {
 				continue;
