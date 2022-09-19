@@ -8,7 +8,7 @@ use WPGraphQL;
 class User implements Hookable {
 
 	public function register_hooks() : void {
-		add_action( 'graphql_register_types_late', [ $this, 'register_where_input_fields' ] );
+		add_action( 'graphql_register_types', [ $this, 'register_where_input_fields' ] );
 		add_filter( 'graphql_map_input_fields_to_wp_user_query', [ $this, 'modify_query_input_fields' ], 10 );
 	}
 

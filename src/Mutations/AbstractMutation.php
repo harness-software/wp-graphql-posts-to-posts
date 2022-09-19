@@ -10,7 +10,7 @@ use WPGraphQLPostsToPosts\Interfaces\Hookable;
 abstract class AbstractMutation implements Hookable {
 
 	public function register_hooks() : void {
-		add_action( 'graphql_register_types_late', [ $this, 'register_input_fields' ] );
+		add_action( 'graphql_register_types', [ $this, 'register_input_fields' ] );
 	}
 
 	abstract public function register_input_fields() : void;
