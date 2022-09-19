@@ -34,6 +34,19 @@ class Fields implements Hookable {
 		return array_filter( self::$p2p_connections, [ __CLASS__, 'should_create_connection' ] );
 	}
 
+	public static function get_post_types_with_connections() : array {
+		$connections = self::$p2p_connections;
+
+		$post_types = [];
+
+		foreach ( $connections as $name => $args ) {
+			$post_types[] = $args['from'];
+			$post_types[] = $args['to'];
+		}
+
+		return array_unique( $post_types );
+	}
+
 	public static function should_create_connection( array $connection ) : bool {
 		return self::should_connect_object( $connection['from'] )
 			&& self::should_connect_object( $connection['to'] );
