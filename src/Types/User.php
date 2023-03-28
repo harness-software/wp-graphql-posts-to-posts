@@ -3,15 +3,12 @@
 namespace WPGraphQLPostsToPosts\Types;
 
 use WPGraphQLPostsToPosts\Interfaces\Hookable;
-use WPGraphQLPostsToPosts\Traits\ObjectsTrait;
 use WPGraphQLPostsToPosts\Types\Fields;
-
+use WPGraphQL;
 class User implements Hookable {
 
-	use ObjectsTrait;
-
 	public function register_hooks() : void {
-		add_action( get_graphql_register_action(), [ $this, 'register_where_input_fields' ] );
+		add_action( 'graphql_register_types', [ $this, 'register_where_input_fields' ] );
 		add_filter( 'graphql_map_input_fields_to_wp_user_query', [ $this, 'modify_query_input_fields' ], 10 );
 	}
 
@@ -32,7 +29,7 @@ class User implements Hookable {
 		$field_names = [];
 		$include     = [];
 
-		$post_types = self::get_post_types();
+		$post_types = WPGraphQL::get_allowed_post_types( 'objects' );
 
 		foreach ( $post_types as $post_type ) {
 			$connection_name = $post_type->name;

@@ -19,22 +19,21 @@ final class WPGraphQLPostsToPosts {
 	 * Main method for running the plugin.
 	 */
 	public function run() : void {
-		$this->create_instances();
-		$this->register_hooks();
+    $this->create_instances();
+    $this->register_hooks();
 	}
 
 	private function create_instances() : void {
-
-        $variant = get_p2p_plugin_variant();
-	$this->instances['connections_registrar'] = new Connections\ConnectionsRegistrar();
-        if ($variant !== "wpcentrics") {
-            $this->instances['input_types']           = new Types\Inputs();
-            $this->instances['field_types']           = new Types\Fields();
-            $this->instances['post']                  = new Types\Post();
-            $this->instances['user']                  = new Types\User();
-            $this->instances['post_mutation']         = new Mutations\PostMutation();
-            $this->instances['users_mutation']        = new Mutations\UserMutation();
-        }
+      $variant = get_p2p_plugin_variant();
+      $this->instances['connections_registrar'] = new Connections\ConnectionsRegistrar();
+      if ($variant !== "wpcentrics") {
+        $this->instances['field_types']           = new Types\Fields();
+        $this->instances['input_types']           = new Types\Inputs();
+        $this->instances['post']                  = new Types\Post();
+        $this->instances['user']                  = new Types\User();
+        $this->instances['post_mutation']         = new Mutations\PostMutation();
+        $this->instances['users_mutation']        = new Mutations\UserMutation();
+      }
 	}
 
 	private function register_hooks() : void {

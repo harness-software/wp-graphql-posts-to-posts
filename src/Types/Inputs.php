@@ -12,7 +12,7 @@ use WPGraphQLPostsToPosts\Interfaces\Hookable;
  */
 class Inputs implements Hookable {
 	public function register_hooks() : void {
-		add_action( get_graphql_register_action(), [ $this, 'register_type' ] );
+		add_action( 'graphql_register_types', [ $this, 'register_type' ] );
 	}
 
 	public function register_type() : void {

@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitfc2ebba91741ccdd8d50eb1e2ef478ce
+class ComposerStaticInit88e43d1b9362b0d65a816daf17f8926a
 {
     public static $prefixLengthsPsr4 = array (
         'W' => 
@@ -27,7 +27,6 @@ class ComposerStaticInitfc2ebba91741ccdd8d50eb1e2ef478ce
         'WPGraphQLPostsToPosts\\Mutations\\AbstractMutation' => __DIR__ . '/../..' . '/src/Mutations/AbstractMutation.php',
         'WPGraphQLPostsToPosts\\Mutations\\PostMutation' => __DIR__ . '/../..' . '/src/Mutations/PostMutation.php',
         'WPGraphQLPostsToPosts\\Mutations\\UserMutation' => __DIR__ . '/../..' . '/src/Mutations/UserMutation.php',
-        'WPGraphQLPostsToPosts\\Traits\\ObjectsTrait' => __DIR__ . '/../..' . '/src/Traits/ObjectsTrait.php',
         'WPGraphQLPostsToPosts\\Types\\Fields' => __DIR__ . '/../..' . '/src/Types/Fields.php',
         'WPGraphQLPostsToPosts\\Types\\Inputs' => __DIR__ . '/../..' . '/src/Types/Inputs.php',
         'WPGraphQLPostsToPosts\\Types\\Post' => __DIR__ . '/../..' . '/src/Types/Post.php',
@@ -38,9 +37,9 @@ class ComposerStaticInitfc2ebba91741ccdd8d50eb1e2ef478ce
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInitfc2ebba91741ccdd8d50eb1e2ef478ce::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitfc2ebba91741ccdd8d50eb1e2ef478ce::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInitfc2ebba91741ccdd8d50eb1e2ef478ce::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit88e43d1b9362b0d65a816daf17f8926a::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit88e43d1b9362b0d65a816daf17f8926a::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit88e43d1b9362b0d65a816daf17f8926a::$classMap;
 
         }, null, ClassLoader::class);
     }

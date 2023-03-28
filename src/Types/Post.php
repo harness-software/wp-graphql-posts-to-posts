@@ -3,22 +3,28 @@
 namespace WPGraphQLPostsToPosts\Types;
 
 use WPGraphQLPostsToPosts\Interfaces\Hookable;
-use WPGraphQLPostsToPosts\Traits\ObjectsTrait;
 use WPGraphQLPostsToPosts\Types\Fields;
+use WPGraphQL;
 
 class Post implements Hookable {
 
-	use ObjectsTrait;
-
 	public function register_hooks() : void {
-		add_action( get_graphql_register_action(), [ $this, 'register_where_input_fields' ] );
+		add_action( 'graphql_register_types', [ $this, 'register_where_input_fields' ] );
 		add_filter( 'graphql_map_input_fields_to_wp_query', [ $this, 'modify_query_input_fields' ], 10, 6 );
 	}
 
 	public function register_where_input_fields() : void {
-		$post_types = self::get_post_types();
+		$post_types = WPGraphQL::get_allowed_post_types( 'objects' );
+
+		$types_wtith_connections = Fields::get_post_types_with_connections();
+
 		foreach ( $post_types as $post_type ) {
-			$graphql_single_name = $post_type->graphql_single_name;
+			// Bail if no P2P connection registered for type.
+			if ( ! in_array( $post_type->name, $types_wtith_connections, true ) ) {
+				continue;
+			}
+
+			$graphql_single_name = ucfirst( $post_type->graphql_single_name );
 
 			register_graphql_field(
 				'RootQueryTo' . $graphql_single_name . 'ConnectionWhereArgs',
@@ -38,7 +44,7 @@ class Post implements Hookable {
 		$field_names = [];
 		$post__in    = [];
 
-		$post_types = self::get_post_types();
+		$post_types = WPGraphQL::get_allowed_post_types( 'objects' );
 
 		foreach ( $post_types as $post_type ) {
 			$connection_name = $post_type->name;

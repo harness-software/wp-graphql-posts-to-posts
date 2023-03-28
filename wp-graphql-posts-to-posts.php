@@ -1,9 +1,9 @@
 <?php
 /**
- * Plugin Name: WPGraphQL for Posts 2 Posts Fork
- * Description: Creates WPGraphQL connections for all of your Posts 2 Posts Relationships connections.
- * Version:     0.2.2
- * Author:      Harness Software, Kellen Mace, Ellytronic Media, Elly Post
+ * Plugin Name: WPGraphQL for Posts 2 Posts
+ * Description: Creates WPGraphQL connections for all of your Posts 2 Posts connections.
+ * Version:     0.5.0.2
+ * Author:      Harness Software, Kellen Mace
  * Author URI:  https://harnessup.com/
  * License:     GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html

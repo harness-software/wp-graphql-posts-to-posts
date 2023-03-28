@@ -6,13 +6,11 @@ namespace WPGraphQLPostsToPosts\Mutations;
 
 use GraphQL\Error\UserError;
 use WPGraphQLPostsToPosts\Interfaces\Hookable;
-use WPGraphQLPostsToPosts\Traits\ObjectsTrait;
 
 abstract class AbstractMutation implements Hookable {
-	use ObjectsTrait;
 
 	public function register_hooks() : void {
-				add_action( get_graphql_register_action(), [ $this, 'register_input_fields' ] );
+		add_action( 'graphql_register_types', [ $this, 'register_input_fields' ] );
 	}
 
 	abstract public function register_input_fields() : void;

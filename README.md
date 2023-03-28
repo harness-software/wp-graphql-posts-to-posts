@@ -64,7 +64,7 @@ query getUsers {
 ## Minimum Software Requirements
 
 - PHP 7.4+
-- [WPGraphQL](https://github.com/wp-graphql/wp-graphql) 1.0.0+
+- [WPGraphQL](https://github.com/wp-graphql/wp-graphql) 1.8.1+ (1.10.0+ recommended)
 - [Posts 2 Posts](https://wordpress.org/plugins/posts-to-posts/) 1.6.6+
 
 ## Future Enhancements
