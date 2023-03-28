@@ -9,7 +9,8 @@
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-function get_p2p_plugin_variant(): string|bool {
+function get_p2p_plugin_variant(): ?string
+{
     if(is_plugin_active('posts-2-posts-relationships/posts-2-posts-relationships.php')) {
         return "wpcentrics";
     }
@@ -18,7 +19,7 @@ function get_p2p_plugin_variant(): string|bool {
         return "scribu";
     }
 
-    return false;
+    return null;
 }
 
 add_action(
@@ -29,7 +30,7 @@ add_action(
 		$dependencies = [
 			'Composer autoload files' => is_readable( $autoload ),
             'WPGraphQL'               => is_plugin_active('wp-graphql/wp-graphql.php'),
-            'Posts 2 Posts'           => get_p2p_plugin_variant() !== false,
+            'Posts 2 Posts'           => !empty(get_p2p_plugin_variant()),
 		];
 
 
